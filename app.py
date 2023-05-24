@@ -30,7 +30,7 @@ chat = AzureChatOpenAI(
     deployment_name="chat",
 )
 
-template="Olet eduskunnan puhekirjoittaja. Kirjoita noin kolmen minuutin puhe aiheesta: {aihe}."
+template="Olet eduskunnan puhekirjoittaja. Kirjoita noin kolmen minuutin puhe aiheesta: {aihe}. Aloita aina sanoilla 'Arvoisa puhemies,'"
 system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 human_template="{text}"
 human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)

@@ -27,7 +27,7 @@ prompt = st.text_input('Aihe')
 
 chat = AzureChatOpenAI(
     openai_api_version="2023-03-15-preview",
-    deployment_name="chat",
+    deployment_name="gpt-4",
 )
 
 template="Olet eduskunnan puhekirjoittaja. Kirjoita noin kolmen minuutin puhe aiheesta: {aihe}. Aloita aina sanoilla 'Arvoisa puhemies,'"

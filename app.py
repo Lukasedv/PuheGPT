@@ -1,5 +1,7 @@
 import os
 import streamlit as st
+import logging
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 from langchain.llms import AzureOpenAI
 from langchain.utilities import OpenWeatherMapAPIWrapper
 from langchain.prompts import PromptTemplate
@@ -19,6 +21,8 @@ from langchain.schema import (
     SystemMessage
 )
 
+logger = logging.getLogger(__name__)
+logger.addHandler(AzureLogHandler())
 
 st.title('📣 PuheGPT')
 st.subheader('Kirjoita puhe aiheesta...')
@@ -30,7 +34,7 @@ chat = AzureChatOpenAI(
     deployment_name="gpt-4",
 )
 
-template="Olet eduskunnan puhekirjoittaja. Kirjoita noin kolmen minuutin puhe aiheesta: {aihe}. Aloita aina sanoilla 'Arvoisa puhemies,'"
+template="Olet eduskunnan puheenkirjoittaja. Kirjoita noin kolmen minuutin puhe aiheesta: {aihe}. Aloita aina sanoilla 'Arvoisa puhemies,'"
 system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 human_template="{text}"
 human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
@@ -38,7 +42,9 @@ human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
 chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
 
 if prompt:
-    with st.spinner("Botti kirjoittaa puheen..."):
+    logger.info(prompt)
+    with st.spinner("Tekoäly kirjoittaa, voi kestää pari minuuttia..."):
         response = chat(chat_prompt.format_prompt(aihe=prompt, text=prompt).to_messages())
     st.success("Tekoälyn luonnos:")
     st.write(response.content)
+    logger.info(response)
